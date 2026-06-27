@@ -31,3 +31,4 @@ backend/uploads/
 backend/results/
 *.pdf
 *.mp4
+.claude/
