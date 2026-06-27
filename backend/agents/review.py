@@ -80,7 +80,7 @@ class ReviewAgent(BaseAgent):
         try:
             llm = get_client(AGENT_MODELS.get("review"))
             user_prompt = self._build_prompt(blackboard)
-            result = await llm.chat_json(SYSTEM_PROMPT, user_prompt, max_tokens=6144)
+            result = await llm.chat_json(SYSTEM_PROMPT, user_prompt, max_tokens=8192)
 
             issues = [ReviewIssue(**iss) for iss in result.get("issues", [])]
             review = ReviewReport(

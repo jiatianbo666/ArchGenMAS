@@ -16,6 +16,8 @@
     "mermaid": "^11.16.0",
     "pako": "^3.0.0",
     "pinia": "^3.0.4",
+    "plantuml-encoder": "^1.4.0",
+    "three": "^0.185.0",
     "vue": "^3.5.38",
     "vue-echarts": "^8.0.1",
     "vue-router": "^4.6.4"
@@ -23,6 +25,7 @@
   "devDependencies": {
     "@types/node": "^24.13.2",
     "@types/pako": "^2.0.4",
+    "@types/three": "^0.185.0",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.9.1",
     "typescript": "~6.0.2",

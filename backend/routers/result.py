@@ -13,6 +13,9 @@ router = APIRouter()
 async def get_result(project_id: str):
     """获取项目完整生成结果"""
     blackboard = mediator.get_blackboard(project_id)
+    # 内存没有就尝试从磁盘加载（后端重启后恢复）
+    if not blackboard:
+        blackboard = mediator.load_from_disk(project_id)
     if not blackboard:
         raise HTTPException(404, "项目不存在")
 
@@ -63,6 +66,8 @@ async def get_result(project_id: str):
 async def get_result_summary(project_id: str):
     """获取项目结果摘要（轻量）"""
     blackboard = mediator.get_blackboard(project_id)
+    if not blackboard:
+        blackboard = mediator.load_from_disk(project_id)
     if not blackboard:
         raise HTTPException(404, "项目不存在")
 

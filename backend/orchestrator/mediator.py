@@ -206,7 +206,30 @@ class Mediator:
             )
         )
 
+        # 持久化黑板数据到 JSON 文件（重启后仍可查看历史结果）
+        self._save_to_disk(blackboard)
+
         return blackboard
+
+    def _save_to_disk(self, blackboard: BlackboardState) -> None:
+        """将黑板状态保存为 JSON 文件"""
+        from config import RESULT_DIR
+        import json
+        project_dir = RESULT_DIR / blackboard.project_id
+        project_dir.mkdir(parents=True, exist_ok=True)
+        json_path = project_dir / "blackboard.json"
+        json_path.write_text(blackboard.model_dump_json(indent=2), encoding="utf-8")
+
+    @staticmethod
+    def load_from_disk(project_id: str) -> Optional[BlackboardState]:
+        """从 JSON 文件加载黑板状态"""
+        from config import RESULT_DIR
+        json_path = RESULT_DIR / project_id / "blackboard.json"
+        if json_path.exists():
+            import json
+            data = json.loads(json_path.read_text(encoding="utf-8"))
+            return BlackboardState(**data)
+        return None
 
 
 # 全局单例

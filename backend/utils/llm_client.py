@@ -25,31 +25,21 @@ class LLMClient:
         self.temperature = temperature
 
     def _extract_content(self, data: dict) -> str:
-        """从 API 响应中提取内容，兼容推理模型的 reasoning_content"""
+        """从 API 响应中提取内容"""
         choice = data.get("choices", [{}])[0]
         msg = choice.get("message", {})
 
-        # 优先取 content
         content = msg.get("content", "")
         if content and content.strip():
             return content.strip()
 
-        # Qwen/DeepSeek 推理模型：content 为空时回退到 reasoning_content
+        # Qwen 推理模型 content 为空时，尝试从 reasoning_content 提取 JSON
         reasoning = msg.get("reasoning_content", "")
         if reasoning and reasoning.strip():
-            # reasoning_content 通常以 "Thinking Process:" 开头
-            # 尝试从中提取 JSON（Qwen 推理模型有时把结果写在思考末尾）
-            # 先尝试找到最后的 {} JSON 块
             json_match = re.search(r"\{[\s\S]*\}", reasoning)
             if json_match:
                 return json_match.group()
 
-            # 找不到 JSON 就返回 reasoning 尾部（去掉 "Thinking Process" 前缀）
-            lines = reasoning.strip().split("\n")
-            # 取最后几段作为实际输出
-            return "\n".join(lines[-30:])
-
-        # 全空
         return ""
 
     async def chat(self, system_prompt: str, user_prompt: str, **kwargs) -> str:
